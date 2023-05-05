@@ -1,4 +1,4 @@
-# Algortimo EM
+# Un poco de teoría
 $Def:$ La verosimilitud completa es $L(\theta|\underline{x},\underline{z})$ y se construye con datos observados $\underline{x}$ y faltantes $\underline{z}$
 
 $$
@@ -18,11 +18,11 @@ $$
 $$
 
 $$
-=log\int \frac{f(\underline{x},\underline{z}|\theta)}{q(\underline{z}|\underline{x},\theta_0)}q(\underline{z}|\underline{x},\theta_0)dz=log\mathbb{E}_{\underline{z}\sim q}[\frac{f(\underline{x},\underline{Z}|\theta)}{q(\underline{Z}|\underline{x},\theta_0)}]
+=log\int \frac{f(\underline{x},\underline{z}|\theta)}{q(\underline{z}|\underline{x},\theta_0)}q(\underline{z}|\underline{x},\theta_0)dz=log\mathbb{E}_{\underline{z}\sim q}[\frac{f(\underline{x},\underline{Z}|\theta)}{q(\underline{Z}|\underline{x},\theta_0)}]\geq\mathbb{E}_{\underline{z}}log(\frac{f(\underline{x},\underline{z}|\theta)}{q(\underline{Z}|\underline{x},\theta_0)})
 $$
 
 $$
-\geq\mathbb{E}_{\underline{z}}log(\frac{f(\underline{x},\underline{z}|\theta)}{q(\underline{Z}|\underline{x},\theta_0)})=\mathbb{E}_{\underline{z}}log(q(\underline{Z}|\underline{x},\theta_0))
+=\mathbb{E}_{\underline{z}}log(q(\underline{Z}|\underline{x},\theta_0))
 $$
 
 Con $q$ arcbitraria.
@@ -39,41 +39,39 @@ $$
 \mathbb{E}_{\underline{z}}[\ell(\theta_1|\underline{x},\underline{z})]-\mathbb{E}_{\underline{z}}[\ell(\theta_0|\underline{x},\underline{z})]=Q(\theta_1|\theta_0)-Q(\theta_0|\theta_0)\ge0
 $$
 
-Es decir, $\theta_1$ maximiza $Q(\theta|\theta_0)\implies\ell(\theta_1|\underline{x})\geq\ell(\theta_0|\underline{x})$
+Es decir $\theta_1$ maximiza $Q(\theta|\theta_0)\implies\ell(\theta_1|\underline{x})\geq\ell(\theta_0|\underline{x})$
 
 con $\theta^{(t+1)}=argmaxQ(\theta|\theta^{(t)})\implies \ell(\theta^{(t+1)}|\underline{x})\ge \ell(\theta^{(t)}|\underline{x})$
 
-Algoritmo EM
+# Algoritmo EM
 
-Inicialice $\theta^{(0)}$ y $t=0$
+1. Inicialice $\theta^{(0)}$ y $t=0$
+2. Repita hasta converger:
+* (E) Obtenga $Q(\theta|\theta^{(t)})=\mathbb{E}_{\underline{z}}[\ell(\theta|\underline{x},\underline{Z})]$ donde $\underline{Z}\sim f(z|x,\theta^{(t)})$
 
-Repita hasta converger:
+* (M) Obtenga $\theta^{(t+1)}=argmaxQ(\theta|\theta^{(t)})$
 
-(E) Obtenga $Q(\theta|\theta^{(t)})=\mathbb{E}_{\underline{z}}[\ell(\theta|\underline{x},\underline{Z})]$ donde $\underline{Z}\sim f(z|x,\theta^{(t)})$
+## Ventajas
 
-(M) Obtenga $\theta^{(t+1)}=argmaxQ(\theta|\theta^{(t)})$
+* Suponiendo que calcular $Q(\theta|\theta^{(t)})$ es sencillo, no se requiere mayor cálculo.
 
-Ventajas
+* Cada iteracion garantizamos que no empeora la estimación
 
-Suponiendo que calcular $Q(\theta|\theta^{(t)})$ es sencillo, no se requiere mayor cálculo.
+* Muy útil cuando trabajamos con la familia exponencial
 
-Cada iteracion garantizamos que no empeora la estimación
+* No requerimos derivadas para maximizar
 
-Muy útil cuando trabajamos con la familia exponencial
+## Desventajas
 
-No requerimos derivadas para maximizar
+* Si no podemos calcular $Q(\theta|\theta^{(t)})$ entonces valio pa pura berga
 
-Desventajas
+* Pero si le sabes a Monte Carlo, tonces se juega
 
-Si no podemos calcular $Q(\theta|\theta^{(t)})$ entonces valio pa pura berga
+* No hay garantía de llegar al máximo global, todo depende del valor inicial $\theta^{(0)}$
 
-Pero si le sabes a Monte Carlo, tonces se juega
+* En dimensiones altas de $\theta$, la convergencia puede ser lenta así como el caso cuando se tienen muchas variables latentes $\underline{Z}$
 
-No hay garantía de llegar al máximo global, todo depende del valor inicial $\theta^{(0)}$
-
-En dimensiones altas de $\theta$, la convergencia puede ser lenta así como el caso cuando se tienen muchas variables latentes $\underline{Z}$
-
-Ej. (Datos censurados)
+## Ej. (Datos censurados)
 
 n observaciones $x_1,…,x_n$ con datos censurados $z_1,…,z_m$ de los cuales sabemos que
 
@@ -142,5 +140,3 @@ $$
 $$
 \theta^{(\infty)}=(...)=\frac{m}{n}\frac{f(a|\theta^{(\infty)})}{1-\Phi(\theta^{(\infty)}-a)}+\overline x
 $$
-
-ola
